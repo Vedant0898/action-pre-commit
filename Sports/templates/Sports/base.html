@@ -10,6 +10,15 @@
     </title>
 </head>
 <body>
+
+    {% if user.is_authenticated %}
+        <p>Welcome {{user.username}}</p>
+        <p><a href="{% url 'Sports:logout' %}" >Logout</a></p>
+    {% else %}
+        <p><a href="{% url 'Sports:register' %}" >Register</a></p>
+        <p><a href="{% url 'Sports:login' %}" >Login</a></p>
+    {% endif %}
+
     {% block body %}
 
     {% endblock body %}    

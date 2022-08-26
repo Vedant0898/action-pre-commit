@@ -1,0 +1,16 @@
+{% extends "Sports/base.html" %}
+
+{% block title %}
+    Register
+{% endblock title %}
+
+{% block body %}
+    <form method="post" action="{% url 'Sports:register' %}">
+        {{form.as_p}}
+        {% csrf_token %}
+        <button name="submit">Register</button>
+    </form>    
+
+
+
+{% endblock body %}
