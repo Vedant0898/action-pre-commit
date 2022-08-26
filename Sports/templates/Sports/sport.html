@@ -1,0 +1,39 @@
+{% extends "Sports/base.html" %}
+
+{% block title %}
+    {{sp.name}}
+{% endblock title %}
+
+{% block body %}
+    <h1>{{sp.name}}</h1>
+    
+    <p>{{sp.info|linebreaks}}</p>
+
+    <h3>Venues</h3>
+    <ul>
+        {% for v in ven %}
+            <li>
+                <p>{{v.name}}</p>
+                <p>Number of courts: {{v.no_of_courts}}</p>
+            </li>
+        {% empty %}
+            <li>No venue found</li>
+        {% endfor %}
+    </ul>
+
+    <h3 class="eqp_cls">Equipments available</h3>
+    <ul class="eqp_cls">
+        {% for e in eqp %}
+            <li>
+                <p>{{e.name}}</p>
+                <p>Qty: {{e.quantity}}</p>
+            </li>
+        {% empty %}
+            <li>No equipments found</li>
+            <!-- <style .eqp_cls{
+                display:none;
+            }></style> -->
+        {% endfor %}
+    </ul>
+
+{% endblock body %}

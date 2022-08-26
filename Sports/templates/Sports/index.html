@@ -1,0 +1,10 @@
+{% extends "Sports/base.html" %}
+
+{% block title %}
+    Home Page
+{% endblock title %}
+
+{% block body %}
+    <p>This is home page</p>
+    <p><a href="{% url 'Sports:all_sports' %}">View all Sports</a></p>
+{% endblock body %}

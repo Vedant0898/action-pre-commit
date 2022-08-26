@@ -1,0 +1,17 @@
+{% extends "Sports/base.html" %}
+
+{% block title %}
+    Sports
+{% endblock title %}
+
+{% block body %}
+    <h1>Sports</h1>
+    <ul>
+        {% for s in sp %}
+            <li><a href="{% url 'Sports:sport' s.id %}">{{s.name}}</a></li>
+        {% empty %}
+            <li>No sport found</li>
+        {% endfor %}
+    </ul>
+
+{% endblock body %}
