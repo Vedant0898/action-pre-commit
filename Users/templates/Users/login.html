@@ -5,7 +5,7 @@
 {% endblock title %}
 
 {% block body %}
-    <form method="post" action="{% url 'Sports:login' %}">
+    <form method="post" action="{% url 'Users:login' %}">
         {{form.as_p}}
         {% csrf_token %}
         <button name="submit">Login</button>

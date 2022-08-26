@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     #My apps
     'Sports.apps.SportsConfig',
+    'Users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
