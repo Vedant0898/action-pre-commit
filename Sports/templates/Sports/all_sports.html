@@ -12,6 +12,10 @@
         {% empty %}
             <li>No sport found</li>
         {% endfor %}
+
+        {% if user.is_staff %}
+            <li><a href="{% url 'Sports:add_sport' %}" >Add Sport</a></li>
+        {% endif %}
     </ul>
 
 {% endblock body %}

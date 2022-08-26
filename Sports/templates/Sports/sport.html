@@ -5,7 +5,11 @@
 {% endblock title %}
 
 {% block body %}
+    <p><a href="{% url 'Sports:all_sports' %}">View all sports</a></p>
     <h1>{{sp.name}}</h1>
+    {% if user.is_staff %}
+        <p><a href="{% url 'Sports:edit_sport' sp.id %}">Edit Sport</a></p>
+    {% endif %}
     
     <p>{{sp.info|linebreaks}}</p>
 
@@ -14,11 +18,17 @@
         {% for v in ven %}
             <li>
                 <p>{{v.name}}</p>
+                {% if user.is_staff %}
+                    <p><a href="{% url 'Sports:edit_venue' v.id %}">Edit venue</a></p>
+                {% endif %}
                 <p>Number of courts: {{v.no_of_courts}}</p>
             </li>
         {% empty %}
             <li>No venue found</li>
         {% endfor %}
+        {% if user.is_staff %}
+            <li><a href="{% url 'Sports:add_venue' sp.id %}">Add Venue</a></li>
+        {% endif %}
     </ul>
 
     <h3 class="eqp_cls">Equipments available</h3>
@@ -27,6 +37,9 @@
             <li>
                 <p>{{e.name}}</p>
                 <p>Qty: {{e.quantity}}</p>
+                {% if user.is_staff %}
+                    <p><a href="{% url 'Sports:edit_inventory' e.id %}">Edit</a></p>
+                {% endif %}
             </li>
         {% empty %}
             <li>No equipments found</li>
@@ -34,6 +47,9 @@
                 display:none;
             }></style> -->
         {% endfor %}
+        {% if user.is_staff %}
+            <li><a href="{% url 'Sports:add_inventory' sp.id %}">Add inventory</a></li>
+    {% endif %}
     </ul>
 
 {% endblock body %}

@@ -1,0 +1,15 @@
+{% extends "Sports/base.html" %}
+
+{% block title %}
+    Edit Inventory
+{% endblock title %}
+
+{% block body %}
+    <p>Editing inventory for {{sp.name}}</p>
+    <form method="post" action="{% url 'Sports:edit_inventory' inv.id %}">
+        {{form.as_p}}
+        {% csrf_token %}
+        <button name="submit">Save Changes</button>
+    </form>    
+
+{% endblock body %}
