@@ -1,0 +1,30 @@
+{% extends "Sports/base.html" %}
+
+{% block title %}
+    View Slots
+{% endblock title %}
+
+{% block body %}
+    <p>Viewing slots for {{loc.sport.name}} at {{loc.venue.name}} </p>
+    
+    <ul>
+        {% for s in slots %}
+            <li>
+                <p>Date: {{s.date}}</p>
+                <p>
+                    Start time: {{s.schedule.start_time|date:"g:i a"}}
+                </p>
+                <p>
+                    End time: {{s.schedule.end_time|date:"g:i a"}}
+                </p>
+                <p>
+                    <a href="{% url 'Sports:book_slot' s.id %}">Book Slot</a>
+                </p>
+            </li>
+        {% empty %}
+            <li>No Slot found</li>
+        {% endfor %}
+    </ul>
+
+
+{% endblock body %}

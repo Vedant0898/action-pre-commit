@@ -20,4 +20,8 @@ urlpatterns = [
     path("inventory/add/<int:sport_id>",views.add_inventory,name="add_inventory"),
     path("inventory/<int:inv_id>/edit",views.edit_inventory,name="edit_inventory"),
 
+    # Slot pages
+    path("slot/<int:sport_id>/<int:ven_id>",views.available_slots,name="available_slots"),
+    path("slot/<int:slot_id>/book",views.book_slot,name="book_slot"),
+
 ]

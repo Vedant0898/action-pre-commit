@@ -22,6 +22,7 @@
                     <p><a href="{% url 'Sports:edit_venue' v.id %}">Edit venue</a></p>
                 {% endif %}
                 <p>Number of courts: {{v.no_of_courts}}</p>
+                <p><a href="{% url 'Sports:available_slots' sp.id v.id %}">View Slots</a></p>
             </li>
         {% empty %}
             <li>No venue found</li>

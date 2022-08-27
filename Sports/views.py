@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+
+from Slots.models import Location, Schedule, Slot
 
 from .models import Inventory, Sport,Venue
 from .forms import SportForm,VenueForm,InventoryForm
@@ -166,3 +169,39 @@ def edit_inventory(request,inv_id):
     context = {"form":form,"sp":sport,"inv":inv}
 
     return render(request,"Sports/edit_inventory.html",context=context)
+
+@login_required
+def available_slots(request,sport_id,ven_id):
+    sp = Sport.objects.get(id = sport_id)
+    ven = Venue.objects.get(id= ven_id)
+    location = get_object_or_404(Location,sport = sp,venue = ven)
+    courts_available = ven.no_of_courts
+    slots = Slot.objects.filter(location=location,status = 1,courts_booked__lt = courts_available).exclude(booking=request.user)
+
+    context = {"loc":location,"slots":slots}
+
+    return render(request,"Sports/available_slots.html",context=context)
+
+@login_required
+def book_slot(request,slot_id):
+
+    slot = get_object_or_404(Slot,id = slot_id)
+
+    if slot.status==2 or slot.courts_booked>=slot.location.venue.no_of_courts:
+        slot.status=2
+        slot.save()
+        messages.error(request,"Slot is booked")
+        return HttpResponseRedirect(reverse("Sports:available_slots",args=[slot.location.sport.id,slot.location.venue.id]))
+    
+    # count number of slots booked by user
+
+
+    slot.booking.add(request.user)
+    slot.courts_booked = slot.courts_booked+1
+    print(slot.courts_booked)
+
+    if slot.courts_booked>=slot.location.venue.no_of_courts:
+        slot.status=2
+    slot.save()
+    messages.success(request,"Slot booked successfully")
+    return HttpResponseRedirect(reverse("Sports:available_slots",args=[slot.location.sport.id,slot.location.venue.id]))
