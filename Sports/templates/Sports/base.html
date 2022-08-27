@@ -13,9 +13,10 @@
     </title>
 </head>
 <body>
-
+    <p><a href="{% url 'Sports:index' %}">Home</a></p>
     {% if user.is_authenticated %}
         <p>Welcome {{user.username}}</p>
+        <p><a href="{% url 'Users:profile' %}">View Profile</a></p>
         <p><a href="{% url 'Users:logout' %}" >Logout</a></p>
     {% else %}
         <p><a href="{% url 'Users:register' %}" >Register</a></p>

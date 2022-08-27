@@ -205,3 +205,23 @@ def book_slot(request,slot_id):
     slot.save()
     messages.success(request,"Slot booked successfully")
     return HttpResponseRedirect(reverse("Sports:available_slots",args=[slot.location.sport.id,slot.location.venue.id]))
+
+@login_required
+def cancel_slot(request,slot_id):
+
+    slot = get_object_or_404(Slot,id = slot_id)
+
+    if request.user not in slot.booking.all():
+        print("Invalid request")
+        return HttpResponseRedirect(reverse("Users:profile"))
+    
+    slot.booking.remove(request.user)
+    slot.courts_booked = slot.courts_booked-1
+    
+    if slot.courts_booked<slot.location.venue.no_of_courts:
+        slot.status = 1
+    
+    slot.save()
+
+    messages.success(request,'Slot Booking cancelled successfully')
+    return HttpResponseRedirect(reverse("Users:profile"))

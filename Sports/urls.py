@@ -23,5 +23,6 @@ urlpatterns = [
     # Slot pages
     path("slot/<int:sport_id>/<int:ven_id>",views.available_slots,name="available_slots"),
     path("slot/<int:slot_id>/book",views.book_slot,name="book_slot"),
+    path("slot/<int:slot_id>/cancel",views.cancel_slot,name = "cancel_slot"),
 
 ]

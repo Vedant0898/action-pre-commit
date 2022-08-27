@@ -1,0 +1,19 @@
+{% extends "Sports/base.html" %}
+
+{% block title %}
+    Profile
+{% endblock title %}
+
+{% block body %}
+    <h1>
+        {{u.first_name}} {{u.last_name}}
+    </h1>
+    <h2>
+        {{u.username}}
+    </h2>
+
+    <p>You have booked a slot {{cnt}} time(s)</p>
+    <p>
+        <a href="{% url 'Users:view_booked_slots' %}">View Booked Slots</a>
+    </p>
+{% endblock body %}
