@@ -28,7 +28,7 @@ class Schedule(models.Model):
     end_time = models.TimeField()
 
     class Meta:
-        ordering = ['start_time','end_time']
+        ordering = ['day','start_time','end_time']
 
     def __str__(self):
         return f'{self.start_time}-{self.end_time} ({self.day}) ({self.location})'

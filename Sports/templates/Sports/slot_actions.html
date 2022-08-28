@@ -1,0 +1,34 @@
+{% extends "Sports/base.html" %}
+
+{% block title %}
+    Slot Actions 
+{% endblock title %}
+
+{% block body %}
+    <p><a href="{% url 'Sports:view_slots_staff' slot.location.id %}">View all slots</a></p>
+    <p>Slot {{slot.schedule.start_time|date:"g:i a"}}-{{slot.schedule.end_time|date:"g:i a"}} for {{slot.location.sport.name}} at {{slot.location.venue.name}} </p>
+    
+    <p>
+        Slot Status:
+        {% if slot.status == '1' %} Available
+        {% elif slot.status == '2' %} Booked
+        {% else %} Maintenance
+        {% endif %}
+    </p>
+    {% if slot.status == '1' and slot.courts_booked > 0 %}
+        <p>Slot booked by:</p>
+        <ul>
+            {% for usr in slot.booking.all %}
+                <li>
+                    {{usr}} 
+                    <p><a href="">Cancel Booking</a></p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if slot.status == '3' %}
+        <p><a href="">Cancel scheduled maintenance</a></p>
+    {% else %}
+        <p><a href="">Schedule for maintenance</a></p>
+    {% endif %}
+{% endblock body %}

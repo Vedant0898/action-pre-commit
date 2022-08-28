@@ -1,0 +1,36 @@
+{% extends "Sports/base.html" %}
+
+{% block title %}
+    All Locations
+{% endblock title %}
+
+{% block body %}
+    <h1>Locations</h1>
+    <ul>
+        {% for l in locs %}
+            <li>
+                <p><a href="{% url 'Sports:scheduler' l.id %}">View Schedule</a></p>
+                <p><a href="{% url 'Sports:view_slots_staff' l.id %}">View Slots Status</a></p>
+                <p><a href="{% url 'Sports:sport' l.sport.id %}">{{l.sport.name}}</a></p>
+                <p>{{l.venue.name}}</p>
+                <p><a href="{% url 'Sports:modify_location' l.id %}">Modify Location</a></p>
+                <p><a href="{% url 'Sports:delete_location' l.id %}" class="confirmation">Delete Location</a></p>
+            </li>
+        {% empty %}
+            <li>No Location found</li>
+        {% endfor %}
+
+        <li><a href="{% url 'Sports:add_location' %}" >Add Location</a></li>
+    </ul>
+
+    <!-- js confirm box  -->
+    <script type="text/javascript">
+        var elems = document.getElementsByClassName('confirmation');
+        var confirmIt = function (e) {
+            if (!confirm('Are you sure?')) e.preventDefault();
+        };
+        for (var i = 0, l = elems.length; i < l; i++) {
+            elems[i].addEventListener('click', confirmIt, false);
+        }
+    </script>
+{% endblock body %}

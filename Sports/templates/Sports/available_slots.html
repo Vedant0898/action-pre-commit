@@ -9,18 +9,21 @@
     
     <ul>
         {% for s in slots %}
-            <li>
-                <p>Date: {{s.date}}</p>
-                <p>
-                    Start time: {{s.schedule.start_time|date:"g:i a"}}
-                </p>
-                <p>
-                    End time: {{s.schedule.end_time|date:"g:i a"}}
-                </p>
-                <p>
-                    <a href="{% url 'Sports:book_slot' s.id %}">Book Slot</a>
-                </p>
-            </li>
+            {% if s.date > today.date or s.date == today.date and s.schedule.start_time > today.time  %}
+                
+                <li>
+                    <p>Date: {{s.date}}</p>
+                    <p>
+                        Start time: {{s.schedule.start_time|date:"g:i a"}}
+                    </p>
+                    <p>
+                        End time: {{s.schedule.end_time|date:"g:i a"}}
+                    </p>
+                    <p>
+                        <a href="{% url 'Sports:book_slot' s.id %}">Book Slot</a>
+                    </p>
+                </li>
+            {% endif %}
         {% empty %}
             <li>No Slot found</li>
         {% endfor %}

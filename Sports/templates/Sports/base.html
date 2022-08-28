@@ -16,6 +16,11 @@
     <p><a href="{% url 'Sports:index' %}">Home</a></p>
     {% if user.is_authenticated %}
         <p>Welcome {{user.username}}</p>
+
+        {% if user.is_staff %}
+            <p><a href="{% url 'Sports:staff_dashboard' %}">Staff Dashboard</a></p>
+        {% endif %}
+
         <p><a href="{% url 'Users:profile' %}">View Profile</a></p>
         <p><a href="{% url 'Users:logout' %}" >Logout</a></p>
     {% else %}

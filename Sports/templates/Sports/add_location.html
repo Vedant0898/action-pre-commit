@@ -1,0 +1,15 @@
+{% extends "Sports/base.html" %}
+
+{% block title %}
+    Add Location
+{% endblock title %}
+
+{% block body %}
+    <p>Add new location</p>
+    <form method="post" action="{% url 'Sports:add_location' %}">
+        {{form.as_p}}
+        {% csrf_token %}
+        <button name="submit">Add</button>
+    </form>    
+
+{% endblock body %}

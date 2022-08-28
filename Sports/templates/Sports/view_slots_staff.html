@@ -1,0 +1,59 @@
+{% extends "Sports/base.html" %}
+
+{% block title %}
+    Home Page
+{% endblock title %}
+
+{% block body %}
+    <style>
+        td.st-1{
+            background-color: rgb(106, 201, 47);
+        }
+        td.st-2{
+            background-color: rgb(255, 146, 146);
+        }
+        td.no_slot{
+            background-color: rgb(169, 169, 169);
+        }
+        td.st-3{
+            background-color: rgb(94, 94, 240);
+        }
+        .black_text{
+            color: black;
+        }
+    </style>
+    <p>Slot for {{loc.sport.name}} at {{loc.venue.name}}</p>
+    <table class="table">
+        <th>Time</th>
+        {% for date in header %}
+            <th>{{date}}</th>
+        {% endfor %}
+
+        {% for k,v in slots.items %}
+            <tr>
+                <td>{{k.0}}-{{k.1}}</td>
+
+                {% for slot in v %}
+                    {% if slot %}
+                        <td class="st-{{slot.status}}">
+                            {% if slot.status == '3' %}
+                                <a href="{% url 'Sports:manage_slot' slot.id %}" class="black_text">Actions</a>
+                            {% else %}
+                                <a href="{% url 'Sports:manage_slot' slot.id %}">Actions</a>
+                            {% endif %}
+                            {% if slot.courts_booked > 0 %}
+                            <p>
+                                {% for usr in slot.booking.all %}
+                                    {{usr}} 
+                                {% endfor %}
+                            </p>
+                            {% endif %}
+                         </td>
+                    {% else %}
+                        <td class="no_slot"></td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock body %}

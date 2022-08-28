@@ -3,8 +3,10 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from datetime import date, datetime,timedelta
 
 from Slots.models import Location, Schedule, Slot
+from Slots.forms import LocationForm,ScheduleForm
 
 from .models import Inventory, Sport,Venue
 from .forms import SportForm,VenueForm,InventoryForm
@@ -177,8 +179,8 @@ def available_slots(request,sport_id,ven_id):
     location = get_object_or_404(Location,sport = sp,venue = ven)
     courts_available = ven.no_of_courts
     slots = Slot.objects.filter(location=location,status = 1,courts_booked__lt = courts_available).exclude(booking=request.user)
-
-    context = {"loc":location,"slots":slots}
+    td = datetime.now()
+    context = {"loc":location,"slots":slots,"today":td}
 
     return render(request,"Sports/available_slots.html",context=context)
 
@@ -194,6 +196,11 @@ def book_slot(request,slot_id):
         return HttpResponseRedirect(reverse("Sports:available_slots",args=[slot.location.sport.id,slot.location.venue.id]))
     
     # count number of slots booked by user
+    cnt = Slot.objects.filter(booking = request.user,date = slot.date).count()
+    if cnt>=3:
+        messages.error(request,"You have already booked 3 slots for this day")
+        return HttpResponseRedirect(reverse("Sports:available_slots",args=[slot.location.sport.id,slot.location.venue.id]))
+    
 
 
     slot.booking.add(request.user)
@@ -225,3 +232,178 @@ def cancel_slot(request,slot_id):
 
     messages.success(request,'Slot Booking cancelled successfully')
     return HttpResponseRedirect(reverse("Users:profile"))
+
+
+@login_required
+def staff_dashboard(request):
+
+    if not request.user.is_staff:
+        return HttpResponseRedirect(reverse("Sports:index"))
+    
+    return render(request,"Sports/staff_dashboard.html")
+
+@login_required
+def add_location(request):
+
+    if not request.user.is_staff:
+        return HttpResponseRedirect(reverse("Sports:index"))
+    
+    if request.method !="POST":
+        form = LocationForm()
+    
+    else:
+        form = LocationForm(data=request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            return HttpResponseRedirect(reverse("Sports:staff_dashboard"))
+    
+    context = {"form":form}
+
+    return render(request,"Sports/add_location.html",context=context)
+
+
+@login_required
+def all_locations(request):
+
+    if not request.user.is_staff:
+        return HttpResponseRedirect(reverse("Sports:index"))
+    
+    locs = Location.objects.all()
+
+    context = {'locs':locs}
+    return render(request,"Sports/all_locations.html",context=context)
+
+@login_required
+def modify_location(request,loc_id):
+    
+    if not request.user.is_staff:
+        return HttpResponseRedirect(reverse("Sports:index"))
+    
+    loc = Location.objects.get(id=loc_id)
+
+    if request.method !="POST":
+        form = LocationForm(instance=loc)
+    
+    else:
+        form = LocationForm(data=request.POST,instance=loc)
+
+        if form.is_valid():
+            form.save()
+
+            return HttpResponseRedirect(reverse("Sports:staff_dashboard"))
+    
+    context = {"form":form,"l":loc}
+
+    return render(request,"Sports/modify_location.html",context=context)
+
+@login_required
+def delete_location(request,loc_id):
+
+    if not request.user.is_staff:
+        return HttpResponseRedirect(reverse("Sports:index"))
+    
+    loc = Location.objects.get(id=loc_id)
+
+    loc.delete()
+    return HttpResponseRedirect(reverse("Sports:staff_dashboard"))
+
+@login_required
+def scheduler(request,loc_id):
+
+    if not request.user.is_staff:
+        return HttpResponseRedirect(reverse("Sports:index"))
+    
+    loc = Location.objects.get(id=loc_id)
+
+    header = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+    # times = {i:[str(i)+":00",str(i+1)+":00"] for i in range(7,24)}
+    is_scheduled = {(str(i)+":00",str(i+1)+":00"):[False for _ in range(len(header))] for i in range(7,24)}
+    sch = Schedule.objects.filter(location=loc)
+
+    for s in sch:
+        i = int(s.day)
+        st = s.start_time
+        et = s.end_time
+        t = ("{:d}:{:02d}".format(st.hour,st.minute),"{:d}:{:02d}".format(et.hour,et.minute))
+        is_scheduled[t][i] = True
+
+
+    # print(is_scheduled)
+    # rng = list(range(7,24))
+
+    context = {"loc":loc,"header":header,'sch':is_scheduled}
+    # print(context)
+    return render(request,"Sports/scheduler.html",context=context)
+
+@login_required
+def add_schedule(request,loc_id,day,stime):
+
+    if not request.user.is_staff:
+        return HttpResponseRedirect(reverse("Sports:index"))
+
+    loc = Location.objects.get(id=loc_id)
+    s_time = datetime.strptime(stime,"%H:%M")
+    e_time = s_time+timedelta(hours=1)
+    sch = Schedule.objects.create(location=loc, day=day,start_time = s_time,end_time = e_time)
+
+    return HttpResponseRedirect(reverse("Sports:scheduler",args=[loc_id]))
+
+
+@login_required
+def remove_schedule(request,loc_id,day,stime):
+
+    if not request.user.is_staff:
+        return HttpResponseRedirect(reverse("Sports:index"))
+
+    loc = Location.objects.get(id=loc_id)
+    s_time = datetime.strptime(stime,"%H:%M")
+    e_time = s_time+timedelta(hours=1)
+    sch = Schedule.objects.get(location=loc, day=day,start_time = s_time,end_time = e_time)
+    sch.delete()
+
+    return HttpResponseRedirect(reverse("Sports:scheduler",args=[loc_id]))
+
+@login_required
+def view_slots_staff(request,loc_id):
+    
+    if not request.user.is_staff:
+        return HttpResponseRedirect(reverse("Sports:index"))
+
+    sdate = datetime.now()
+    edate = sdate + timedelta(weeks=1)
+
+    loc = Location.objects.get(id=loc_id)
+    slots = Slot.objects.filter(date__gte = sdate, date__lte = edate,location = loc)
+
+    header = []
+    for i in range(8):
+        dt = datetime.now()+timedelta(days=i)
+        header.append(dt.strftime("%d/%m/%Y"))
+    # print(header)
+
+    slots_dict = {(str(i)+":00",str(i+1)+":00"):[False for _ in range(len(header))] for i in range(7,24)}
+    # sch = Schedule.objects.filter(location=loc)
+    for s in slots:
+        i = int((s.date-date.today()).days)
+        st = s.schedule.start_time
+        et = s.schedule.end_time
+        t = ("{:d}:{:02d}".format(st.hour,st.minute),"{:d}:{:02d}".format(et.hour,et.minute))
+        slots_dict[t][i] = s
+
+    # print(slots_dict)
+    context = {"slots":slots_dict,"loc":loc,"header":header}
+    return render(request,"Sports/view_slots_staff.html",context=context)
+
+@login_required
+def manage_slot(request,slot_id):
+
+    if not request.user.is_staff:
+        return HttpResponseRedirect(reverse("Sports:index"))
+
+    slot = Slot.objects.get(id=slot_id)
+
+    context = {"slot":slot}
+
+    return render(request,"Sports/slot_actions.html",context=context)

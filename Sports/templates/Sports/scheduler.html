@@ -1,0 +1,37 @@
+{% extends "Sports/base.html" %}
+
+{% block title %}
+    Scheduler
+{% endblock title %}
+
+{% block body %}
+    <style>
+        td.remove{
+            background-color: rgb(106, 201, 47);
+        }
+        td.add{
+            background-color: rgb(255, 146, 146);
+        }
+    </style>
+    <p>Schedule for {{loc.sport.name}} at {{loc.venue.name}}</p>
+    <table class="table">
+        <th>Time</th>
+        {% for day in header %}
+            <th>{{day}}</th>
+        {% endfor %}
+
+        {% for k,v in sch.items %}
+            <tr>
+                <td>{{k.0}}-{{k.1}}</td>
+
+                {% for status in v %}
+                    {% if status %}
+                        <td class="remove"><a href="{% url 'Sports:remove_schedule' loc.id forloop.counter0 k.0 %}">Remove</a> </td>
+                    {% else %}
+                        <td class="add"><a href="{% url 'Sports:add_schedule' loc.id forloop.counter0 k.0 %}">Add</a></td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock body %}
