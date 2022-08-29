@@ -1,4 +1,5 @@
 from datetime import datetime
+from multiprocessing import context
 from django.shortcuts import render
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm
@@ -8,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 from Slots.models import Slot
 
+from .models import Notification
 from .forms import RegisterUserForm
 # Create your views here.
 
@@ -75,4 +77,13 @@ def view_booked_slots(request):
     context = {"slots":slots,"today":today}
 
     return render(request,"Users/view_booked_slots.html",context=context)
+
+@login_required
+def view_notification(request):
+
+    notifs = Notification.objects.filter(user = request.user)
+
+    context = {'notifs':notifs}
+
+    return render(request,"USers/view_notifications.html",context=context)
 

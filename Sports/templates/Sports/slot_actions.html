@@ -22,7 +22,9 @@
             {% for usr in slot.booking.all %}
                 <li>
                     {{usr}} 
-                    <p><a href="{% url 'Sports:cancel_slot_staff' slot.id usr.id %}" class="confirmation">Cancel Booking</a></p>
+                    {% if slot.date > today.date or slot.date == today.date and slot.schedule.start_time > today.time  %}
+                        <p><a href="{% url 'Sports:cancel_slot_staff' slot.id usr.id %}" class="confirmation">Cancel Booking</a></p>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>

@@ -9,6 +9,8 @@ from datetime import date, datetime,timedelta
 from Slots.models import Location, Schedule, Slot
 from Slots.forms import LocationForm,ScheduleForm
 
+from Users.models import Notification
+
 from .models import Inventory, Sport,Venue
 from .forms import SportForm,VenueForm,InventoryForm
 # Create your views here.
@@ -404,8 +406,9 @@ def manage_slot(request,slot_id):
         return HttpResponseRedirect(reverse("Sports:index"))
 
     slot = Slot.objects.get(id=slot_id)
+    td = datetime.now()
 
-    context = {"slot":slot}
+    context = {"slot":slot,"today":td}
 
     return render(request,"Sports/slot_actions.html",context=context)
 
@@ -430,6 +433,9 @@ def cancel_slot_staff(request,slot_id,user_id):
     slot.save()
 
     # send notification to user
+    dt = slot.date.strftime("%m/%d/%Y")
+    CNC_TXT = f"We are sorry to inform you that your slot booking (Date:{dt} From:{slot.schedule.start_time} To:{slot.schedule.end_time}) for {slot.location.sport.name} at {slot.location.venue.name} has been cancelled due to unavoidable reasons.\nWe are extremely sorry for the inconvenience."
+    notif = Notification.objects.create(user = usr,text = CNC_TXT)
 
     return HttpResponseRedirect(reverse("Sports:manage_slot",args=[slot_id]))
 
@@ -449,8 +455,11 @@ def schedule_maintenance(request,slot_id):
     slot.status = 3
 
     slot.save()
-
+    dt = slot.date.strftime("%m/%d/%Y")
     # send notif to users
+    MNT_TXT = f"We are sorry to inform you that your slot booking (Date:{dt} From:{slot.schedule.start_time} To:{slot.schedule.end_time}) for {slot.location.sport.name} at {slot.location.venue.name} is cancelled due to maintenance.\nWe are extremely sorry for the inconvenience."
+    for usr in users:
+        notif = Notification.objects.create(user = usr,text = MNT_TXT)
 
     return HttpResponseRedirect(reverse("Sports:manage_slot",args=[slot_id]))
 
@@ -485,5 +494,9 @@ def holiday(request,slot_id):
     slot.save()
 
     # send notif to users
+    dt = slot.date.strftime("%m/%d/%Y")
+    HLD_TXT = f"We are sorry to inform you that your slot booking (Date:{dt} From:{slot.schedule.start_time} To:{slot.schedule.end_time}) for {slot.location.sport.name} at {slot.location.venue.name} is cancelled due to holiday."
+    for usr in users:
+        notif = Notification.objects.create(user = usr,text = HLD_TXT)
 
     return HttpResponseRedirect(reverse("Sports:manage_slot",args=[slot_id]))

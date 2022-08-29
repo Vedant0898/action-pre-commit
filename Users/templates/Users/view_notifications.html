@@ -1,0 +1,23 @@
+{% extends "Sports/base.html" %}
+
+{% block title %}
+    Notifications
+{% endblock title %}
+
+{% block body %}
+    Notifications for {{user.username}}
+
+    <ul>
+        {% for n in notifs %}
+            <li>
+                <p>Date : {{n.date|date:"d/m/Y"}} </p>
+                <p>{{n.text|linebreaks}} </p>
+            </li>
+        {% empty %}
+            <li>
+                No notification found
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endblock body %}

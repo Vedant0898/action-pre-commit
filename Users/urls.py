@@ -13,5 +13,7 @@ urlpatterns = [
     # Profile
     path("profile",views.profile,name="profile"),
     path("slots/booked",views.view_booked_slots,name="view_booked_slots"),
+    path("notifications",views.view_notification,name="view_notification"),
+
     
 ]
