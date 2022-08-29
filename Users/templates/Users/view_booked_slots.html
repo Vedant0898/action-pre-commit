@@ -15,7 +15,7 @@
                         <p>{{s.date}} </p>
                         <p>From: {{s.schedule.start_time|date:"g:i a"}}
                             To: {{s.schedule.end_time|date:"g:i a"}} </p>
-                        <p><a href="{% url 'Sports:cancel_slot' s.id %}">Cancel Slot Booking</a></p>
+                        <p><a href="{% url 'Sports:cancel_slot' s.id %}" class="confirmation">Cancel Slot Booking</a></p>
                     </li>
                 {% endif %}
             {% endfor %}

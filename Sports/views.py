@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from datetime import date, datetime,timedelta
 
 from Slots.models import Location, Schedule, Slot
@@ -407,3 +408,82 @@ def manage_slot(request,slot_id):
     context = {"slot":slot}
 
     return render(request,"Sports/slot_actions.html",context=context)
+
+@login_required
+def cancel_slot_staff(request,slot_id,user_id):
+
+    if not request.user.is_staff:
+        return HttpResponseRedirect(reverse("Sports:index"))
+
+    usr = User.objects.get(id=user_id)
+    slot = Slot.objects.get(id=slot_id)
+
+    if usr not in slot.booking.all():
+        return HttpResponseRedirect(reverse("Sports:index"))
+    
+    slot.booking.remove(usr)
+    slot.courts_booked = slot.courts_booked-1
+
+    if slot.courts_booked<slot.location.venue.no_of_courts:
+        slot.status = 1
+    
+    slot.save()
+
+    # send notification to user
+
+    return HttpResponseRedirect(reverse("Sports:manage_slot",args=[slot_id]))
+
+@login_required
+def schedule_maintenance(request,slot_id):
+
+    if not request.user.is_staff:
+        return HttpResponseRedirect(reverse("Sports:index"))
+
+    slot = Slot.objects.get(id=slot_id)
+    users = slot.booking.all()
+
+    for usr in users:
+        slot.booking.remove(usr)
+    
+    slot.courts_booked = 0
+    slot.status = 3
+
+    slot.save()
+
+    # send notif to users
+
+    return HttpResponseRedirect(reverse("Sports:manage_slot",args=[slot_id]))
+
+
+@login_required
+def cancel_maintenance(request,slot_id):
+
+    if not request.user.is_staff:
+        return HttpResponseRedirect(reverse("Sports:index"))
+
+    slot = Slot.objects.get(id=slot_id)
+    slot.status = 1
+    slot.save()
+
+    return HttpResponseRedirect(reverse("Sports:manage_slot",args=[slot_id]))
+
+@login_required
+def holiday(request,slot_id):
+
+    if not request.user.is_staff:
+        return HttpResponseRedirect(reverse("Sports:index"))
+
+    slot = Slot.objects.get(id=slot_id)
+    users = slot.booking.all()
+
+    for usr in users:
+        slot.booking.remove(usr)
+    
+    slot.courts_booked = 0
+    slot.status = 4
+
+    slot.save()
+
+    # send notif to users
+
+    return HttpResponseRedirect(reverse("Sports:manage_slot",args=[slot_id]))

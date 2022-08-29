@@ -39,6 +39,7 @@ class Slot(models.Model):
         ("1",'Available'),
         ("2",'Booked'),
         ("3",'Maintenance'),
+        ("4",'Holiday'),
     )
 
     schedule = models.ForeignKey(Schedule,on_delete=models.CASCADE)

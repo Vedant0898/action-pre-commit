@@ -33,6 +33,11 @@ urlpatterns = [
 
     path("staff/slots/all/<int:loc_id>",views.view_slots_staff,name="view_slots_staff"),
     path("staff/slots/manage/<int:slot_id>",views.manage_slot,name="manage_slot"),
+    path("staff/slots/cancel/<int:slot_id>/<int:user_id>",views.cancel_slot_staff,name="cancel_slot_staff"),
+    path("staff/slots/sch_mntnce/<int:slot_id>",views.schedule_maintenance,name="schedule_maintenance"),
+    path("staff/slots/cancel_mntnce/<int:slot_id>",views.cancel_maintenance,name="cancel_maintenance"),
+    path("staff/slots/holiday/<int:slot_id>",views.holiday,name="holiday"),
+
 
 
     # Slot pages

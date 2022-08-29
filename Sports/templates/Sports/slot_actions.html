@@ -12,23 +12,27 @@
         Slot Status:
         {% if slot.status == '1' %} Available
         {% elif slot.status == '2' %} Booked
-        {% else %} Maintenance
+        {% elif slot.status == '3' %} Maintenance
+        {% else %} Holiday
         {% endif %}
     </p>
-    {% if slot.status == '1' and slot.courts_booked > 0 %}
+    {% if slot.status == '2' or slot.status == '1' and slot.courts_booked > 0 %}
         <p>Slot booked by:</p>
         <ul>
             {% for usr in slot.booking.all %}
                 <li>
                     {{usr}} 
-                    <p><a href="">Cancel Booking</a></p>
+                    <p><a href="{% url 'Sports:cancel_slot_staff' slot.id usr.id %}" class="confirmation">Cancel Booking</a></p>
                 </li>
             {% endfor %}
         </ul>
     {% endif %}
     {% if slot.status == '3' %}
-        <p><a href="">Cancel scheduled maintenance</a></p>
+        <p><a href="{% url 'Sports:cancel_maintenance' slot.id %}">Cancel scheduled maintenance</a></p>
     {% else %}
-        <p><a href="">Schedule for maintenance</a></p>
+        <p><a href="{% url 'Sports:schedule_maintenance' slot.id %}">Schedule for maintenance</a></p>
+    {% endif %}
+    {% if slot.status != '4' %}
+        <p><a href="{% url 'Sports:holiday' slot.id %}">Cancel slot for Holiday</a></p>
     {% endif %}
 {% endblock body %}
