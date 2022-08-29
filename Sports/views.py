@@ -180,10 +180,27 @@ def available_slots(request,sport_id,ven_id):
     sp = Sport.objects.get(id = sport_id)
     ven = Venue.objects.get(id= ven_id)
     location = get_object_or_404(Location,sport = sp,venue = ven)
-    courts_available = ven.no_of_courts
-    slots = Slot.objects.filter(location=location,status = 1,courts_booked__lt = courts_available).exclude(booking=request.user)
-    td = datetime.now()
-    context = {"loc":location,"slots":slots,"today":td}
+    
+    sdate = datetime.now()
+    edate = sdate + timedelta(weeks=1)
+    slots = Slot.objects.filter(date__gte = sdate, date__lte = edate,location = location)
+
+    header = []
+    for i in range(8):
+        dt = datetime.now()+timedelta(days=i)
+        header.append(dt.strftime("%d/%m/%Y"))
+    
+    slots_dict = {(str(i)+":00",str((i+1)%24)+":00"):[False for _ in range(len(header))] for i in range(7,24)}
+    # sch = Schedule.objects.filter(location=loc)
+    for s in slots:
+        i = int((s.date-date.today()).days)
+        st = s.schedule.start_time
+        et = s.schedule.end_time
+        t = ("{:d}:{:02d}".format(st.hour,st.minute),"{:d}:{:02d}".format(et.hour,et.minute))
+        slots_dict[t][i] = s
+    
+
+    context = {"loc":location,"slots":slots_dict,"header":header,"today":sdate}
 
     return render(request,"Sports/available_slots.html",context=context)
 
@@ -234,7 +251,7 @@ def cancel_slot(request,slot_id):
     slot.save()
 
     messages.success(request,'Slot Booking cancelled successfully')
-    return HttpResponseRedirect(reverse("Users:profile"))
+    return HttpResponseRedirect(reverse("Sports:available_slots",args=[slot.location.sport.id,slot.location.venue.id]))
 
 
 @login_required
@@ -322,7 +339,7 @@ def scheduler(request,loc_id):
 
     header = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
     # times = {i:[str(i)+":00",str(i+1)+":00"] for i in range(7,24)}
-    is_scheduled = {(str(i)+":00",str(i+1)+":00"):[False for _ in range(len(header))] for i in range(7,24)}
+    is_scheduled = {(str(i)+":00",str((i+1)%24)+":00"):[False for _ in range(len(header))] for i in range(7,24)}
     sch = Schedule.objects.filter(location=loc)
 
     for s in sch:
@@ -386,7 +403,7 @@ def view_slots_staff(request,loc_id):
         header.append(dt.strftime("%d/%m/%Y"))
     # print(header)
 
-    slots_dict = {(str(i)+":00",str(i+1)+":00"):[False for _ in range(len(header))] for i in range(7,24)}
+    slots_dict = {(str(i)+":00",str((i+1)%24)+":00"):[False for _ in range(len(header))] for i in range(7,24)}
     # sch = Schedule.objects.filter(location=loc)
     for s in slots:
         i = int((s.date-date.today()).days)

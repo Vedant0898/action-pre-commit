@@ -5,9 +5,32 @@
 {% endblock title %}
 
 {% block body %}
+    <style>
+        td.st-1{
+            background-color: rgb(106, 201, 47);
+        }
+        td.st-2{
+            background-color: rgb(255, 146, 146);
+        }
+        td.no_slot{
+            background-color: rgb(169, 169, 169);
+        }
+        td.st-3{
+            background-color: rgb(94, 94, 240);
+        }
+        td.st-4{
+            background-color: gold;
+        }
+        td.st-5{
+            background-color: orange;
+        }
+        .black_text{
+            color: black;
+        }
+    </style>
     <p>Viewing slots for {{loc.sport.name}} at {{loc.venue.name}} </p>
     
-    <ul>
+    <!-- <ul>
         {% for s in slots %}
             {% if s.date > today.date or s.date == today.date and s.schedule.start_time > today.time  %}
                 
@@ -27,7 +50,58 @@
         {% empty %}
             <li>No Slot found</li>
         {% endfor %}
-    </ul>
+    </ul> -->
+    <table class="table">
+        <th>Time</th>
+        {% for date in header %}
+            <th>{{date}}</th>
+        {% endfor %}
+
+        {% for k,v in slots.items %}
+            <tr>
+                <td>{{k.0}}-{{k.1}}</td>
+
+                {% for slot in v %}
+                    {% if slot %}
+                        {% if slot.date == today.date and slot.schedule.start_time < today.time %}
+                            <td class="st-2">
+                        {% elif user in slot.booking.all %}
+                            <td class="st-5">
+                        {% else %}
+                            <td class="st-{{slot.status}}">
+                        {% endif %}
+                            {% if slot.date == today.date and slot.schedule.start_time < today.time %}
+                            {% if user in slot.booking.all %}
+                                Past Booking
+                            {% else %}
+                                Booked
+                            {% endif %}
+                            {% elif slot.status == '1' %}
+                                {% if user in slot.booking.all %}
+                                    <a href="{% url 'Sports:cancel_slot' slot.id %}">Cancel Booking</a>
+                                {% else %}
+                                    <a href="{% url 'Sports:book_slot' slot.id %}">Book Now</a>
+                                {% endif %}
+                            {% elif slot.status == '2' %}
+                                {% if user in slot.booking.all %}
+                                    <a href="{% url 'Sports:cancel_slot' slot.id %}">Cancel Booking</a>
+                                {% else %}
+                                    Booked
+                                {% endif %}
+                            {% elif slot.status == '3' %}
+                                Maintenance
+                            {% elif slot.status == '4' %}
+                                Holiday
+                            {% endif %}
+                         </td>
+                    {% else %}
+                        <td class="no_slot"></td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+
 
 
 {% endblock body %}
