@@ -1,5 +1,9 @@
 # Slot Booking
 
+### Site deployed on [heroku](https://slotbooking-vedant.herokuapp.com/)
+
+---
+
 ## Features
 
 - Registration system for user

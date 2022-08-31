@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from datetime import date, datetime,timedelta
 
 from Slots.models import Location, Schedule, Slot
-from Slots.forms import LocationForm,ScheduleForm
+from Slots.forms import LocationForm
 
 from Users.models import Notification
 
@@ -16,9 +16,11 @@ from .forms import SportForm,VenueForm,InventoryForm
 # Create your views here.
 
 def index(request):
+    # Home page
     return render(request,"Sports/index.html")
 
 def view_sport(request,sport_id):
+    # Individual page for each sport
     sport = Sport.objects.get(id = sport_id)
     venues = sport.venue_set.all()
     eqp = sport.inventory_set.all()
@@ -27,6 +29,7 @@ def view_sport(request,sport_id):
     return render(request,"Sports/sport.html",context=context)
 
 def view_all_sports(request):
+    # Link to all sports pages
     sport = Sport.objects.all()
 
     context = {"sp":sport}
@@ -35,6 +38,7 @@ def view_all_sports(request):
 
 @login_required
 def add_sport(request):
+    # add sport form for staff
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -56,6 +60,7 @@ def add_sport(request):
 
 @login_required
 def edit_sport(request,sport_id):
+    # edit existing sport for staff
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -79,6 +84,7 @@ def edit_sport(request,sport_id):
 
 @login_required
 def add_venue(request,sport_id):
+    # add new venue for staff
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -104,6 +110,7 @@ def add_venue(request,sport_id):
 
 @login_required
 def edit_venue(request,venue_id):
+    # edit existing venue for staff
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -128,6 +135,7 @@ def edit_venue(request,venue_id):
 
 @login_required
 def add_inventory(request,sport_id):
+    # add new inventory for staff
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -153,6 +161,7 @@ def add_inventory(request,sport_id):
 
 @login_required
 def edit_inventory(request,inv_id):
+    # edit existing inventory for staff
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -177,6 +186,8 @@ def edit_inventory(request,inv_id):
 
 @login_required
 def available_slots(request,sport_id,ven_id):
+    # view available slots at a given location
+
     sp = Sport.objects.get(id = sport_id)
     ven = Venue.objects.get(id= ven_id)
     location = get_object_or_404(Location,sport = sp,venue = ven)
@@ -206,6 +217,7 @@ def available_slots(request,sport_id,ven_id):
 
 @login_required
 def book_slot(request,slot_id):
+    # book a slot 
 
     slot = get_object_or_404(Slot,id = slot_id)
 
@@ -235,6 +247,7 @@ def book_slot(request,slot_id):
 
 @login_required
 def cancel_slot(request,slot_id):
+    # cancel booked slot for user
 
     slot = get_object_or_404(Slot,id = slot_id)
 
@@ -256,6 +269,7 @@ def cancel_slot(request,slot_id):
 
 @login_required
 def staff_dashboard(request):
+    # link to staff dashboard
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -264,6 +278,7 @@ def staff_dashboard(request):
 
 @login_required
 def add_location(request):
+    # add new location for staff
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -286,6 +301,7 @@ def add_location(request):
 
 @login_required
 def all_locations(request):
+    # view all locations for staff
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -297,6 +313,7 @@ def all_locations(request):
 
 @login_required
 def modify_location(request,loc_id):
+    # modify existing location for staff
     
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -320,6 +337,7 @@ def modify_location(request,loc_id):
 
 @login_required
 def delete_location(request,loc_id):
+    # delete a given location for staff
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -331,6 +349,7 @@ def delete_location(request,loc_id):
 
 @login_required
 def scheduler(request,loc_id):
+    # view schedule of a given location for staff
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -350,15 +369,13 @@ def scheduler(request,loc_id):
         is_scheduled[t][i] = True
 
 
-    # print(is_scheduled)
-    # rng = list(range(7,24))
-
     context = {"loc":loc,"header":header,'sch':is_scheduled}
-    # print(context)
+
     return render(request,"Sports/scheduler.html",context=context)
 
 @login_required
 def add_schedule(request,loc_id,day,stime):
+    # add schedule at given location, day and time
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -366,13 +383,15 @@ def add_schedule(request,loc_id,day,stime):
     loc = Location.objects.get(id=loc_id)
     s_time = datetime.strptime(stime,"%H:%M")
     e_time = s_time+timedelta(hours=1)
-    sch = Schedule.objects.create(location=loc, day=day,start_time = s_time,end_time = e_time)
+    if not Schedule.objects.filter(location=loc,day=day,start_time = s_time,end_time = e_time).exists():
+        Schedule.objects.create(location=loc, day=day,start_time = s_time,end_time = e_time)
 
     return HttpResponseRedirect(reverse("Sports:scheduler",args=[loc_id]))
 
 
 @login_required
 def remove_schedule(request,loc_id,day,stime):
+    # remove schedule at given location, day and time
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -380,13 +399,17 @@ def remove_schedule(request,loc_id,day,stime):
     loc = Location.objects.get(id=loc_id)
     s_time = datetime.strptime(stime,"%H:%M")
     e_time = s_time+timedelta(hours=1)
-    sch = Schedule.objects.get(location=loc, day=day,start_time = s_time,end_time = e_time)
-    sch.delete()
+    try:
+        sch = Schedule.objects.get(location=loc, day=day,start_time = s_time,end_time = e_time)
+        sch.delete()
+    except:
+        pass
 
     return HttpResponseRedirect(reverse("Sports:scheduler",args=[loc_id]))
 
 @login_required
 def view_slots_staff(request,loc_id):
+    # view all slots status overview for staff at given location
     
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -418,6 +441,7 @@ def view_slots_staff(request,loc_id):
 
 @login_required
 def manage_slot(request,slot_id):
+    # manage a given slot for staff
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -431,6 +455,7 @@ def manage_slot(request,slot_id):
 
 @login_required
 def cancel_slot_staff(request,slot_id,user_id):
+    # cancel a user's slot booking for staff
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -458,6 +483,7 @@ def cancel_slot_staff(request,slot_id,user_id):
 
 @login_required
 def schedule_maintenance(request,slot_id):
+    # schedule the slot for maintenance
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -483,6 +509,7 @@ def schedule_maintenance(request,slot_id):
 
 @login_required
 def cancel_maintenance(request,slot_id):
+    # cancel scheduled maintenance for given slot
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
@@ -495,6 +522,7 @@ def cancel_maintenance(request,slot_id):
 
 @login_required
 def holiday(request,slot_id):
+    # cancel a slot due to holiday
 
     if not request.user.is_staff:
         return HttpResponseRedirect(reverse("Sports:index"))
