@@ -24,7 +24,7 @@
 - **Details of slot booking**
   - Users can book a slot or cancel a booked slot
   - User can book atmost 3 slots per day
-  - Slot is accepted automatically
+  - Slot booking is accepted automatically
   - Staff can view all slot booking and cancel booking for any user if needed
   - Staff can schedule maintenance for a slot, cancel scheduled maintenance, or cancel slot due to holiday
 ---
