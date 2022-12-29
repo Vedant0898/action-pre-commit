@@ -6,13 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Slots', '0007_alter_schedule_options'),
+        ("Slots", "0007_alter_schedule_options"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='slot',
-            name='status',
-            field=models.CharField(choices=[('1', 'Available'), ('2', 'Booked'), ('3', 'Maintenance'), ('4', 'Holiday')], max_length=1),
+            model_name="slot",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("1", "Available"),
+                    ("2", "Booked"),
+                    ("3", "Maintenance"),
+                    ("4", "Holiday"),
+                ],
+                max_length=1,
+            ),
         ),
     ]

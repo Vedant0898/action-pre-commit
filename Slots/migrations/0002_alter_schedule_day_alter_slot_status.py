@@ -6,18 +6,32 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Slots', '0001_initial'),
+        ("Slots", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='schedule',
-            name='day',
-            field=models.CharField(choices=[('0', 'Monday'), ('1', 'Tuesday'), ('2', 'Wednesday'), ('3', 'Thursday'), ('4', 'Friday'), ('5', 'Saturday'), ('6', 'Sunday')], max_length=1),
+            model_name="schedule",
+            name="day",
+            field=models.CharField(
+                choices=[
+                    ("0", "Monday"),
+                    ("1", "Tuesday"),
+                    ("2", "Wednesday"),
+                    ("3", "Thursday"),
+                    ("4", "Friday"),
+                    ("5", "Saturday"),
+                    ("6", "Sunday"),
+                ],
+                max_length=1,
+            ),
         ),
         migrations.AlterField(
-            model_name='slot',
-            name='status',
-            field=models.CharField(choices=[('1', 'Available'), ('2', 'Booked'), ('3', 'Maintenance')], max_length=1),
+            model_name="slot",
+            name="status",
+            field=models.CharField(
+                choices=[("1", "Available"), ("2", "Booked"), ("3", "Maintenance")],
+                max_length=1,
+            ),
         ),
     ]

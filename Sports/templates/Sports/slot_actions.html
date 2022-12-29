@@ -1,13 +1,13 @@
 {% extends "Sports/base.html" %}
 
 {% block title %}
-    Slot Actions 
+    Slot Actions
 {% endblock title %}
 
 {% block body %}
     <p><a href="{% url 'Sports:view_slots_staff' slot.location.id %}">View all slots</a></p>
     <p>Slot {{slot.schedule.start_time|date:"g:i a"}}-{{slot.schedule.end_time|date:"g:i a"}} for {{slot.location.sport.name}} at {{slot.location.venue.name}} </p>
-    
+
     <p>
         Slot Status:
         {% if slot.status == '1' %} Available
@@ -21,7 +21,7 @@
         <ul>
             {% for usr in slot.booking.all %}
                 <li>
-                    {{usr}} 
+                    {{usr}}
                     {% if slot.date > today.date or slot.date == today.date and slot.schedule.start_time > today.time  %}
                         <p><a href="{% url 'Sports:cancel_slot_staff' slot.id usr.id %}" class="confirmation">Cancel Booking</a></p>
                     {% endif %}

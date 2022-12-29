@@ -13,7 +13,7 @@
 ---
 - **Schedules and Slot**
 - Staff can create a schedule for each venue
-- Slots will be generated automatically from the given schedule 
+- Slots will be generated automatically from the given schedule
 ---
 - **Slots are of 4 types**:
   - Available
@@ -46,7 +46,7 @@
 - **Location** model stores a combination of **Sport** and **Venue** for easy access in **Slot** and **Schedule**
 - **Schedule** stores the start and end time of a slot for a given day at a given **Location**
 - **Slot** stores the date, status and users who have booked this slot
---- 
+---
 ### Users app
 - **Notification** model for storing the time and text of system generated notification
 ---

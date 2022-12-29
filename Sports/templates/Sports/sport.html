@@ -10,7 +10,7 @@
     {% if user.is_staff %}
         <p><a href="{% url 'Sports:edit_sport' sp.id %}">Edit Sport</a></p>
     {% endif %}
-    
+
     <p>{{sp.info|linebreaks}}</p>
 
     <h3>Venues</h3>

@@ -6,20 +6,20 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Sports', '0001_initial'),
+        ("Sports", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='inventory',
-            options={'verbose_name_plural': 'Inventory'},
+            name="inventory",
+            options={"verbose_name_plural": "Inventory"},
         ),
         migrations.AlterModelOptions(
-            name='sport',
-            options={'verbose_name_plural': 'Sports'},
+            name="sport",
+            options={"verbose_name_plural": "Sports"},
         ),
         migrations.AlterModelOptions(
-            name='venue',
-            options={'verbose_name_plural': 'Venues'},
+            name="venue",
+            options={"verbose_name_plural": "Venues"},
         ),
     ]

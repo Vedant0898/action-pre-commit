@@ -6,16 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Slots', '0005_slot_location'),
+        ("Slots", "0005_slot_location"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='schedule',
-            options={'ordering': ['start_time', 'end_time']},
+            name="schedule",
+            options={"ordering": ["start_time", "end_time"]},
         ),
         migrations.AlterModelOptions(
-            name='slot',
-            options={'ordering': ['date', 'schedule']},
+            name="slot",
+            options={"ordering": ["date", "schedule"]},
         ),
     ]
