@@ -1,7 +1,8 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
-from Sports.models import Sport, Venue
+from Sports.models import Sport
+from Sports.models import Venue
 
 # Create your models here.
 

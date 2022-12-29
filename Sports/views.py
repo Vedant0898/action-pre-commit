@@ -1,18 +1,26 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
-from django.urls import reverse
+from datetime import date
+from datetime import datetime
+from datetime import timedelta
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from datetime import date, datetime, timedelta
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django.urls import reverse
 
-from Slots.models import Location, Schedule, Slot
+from .forms import InventoryForm
+from .forms import SportForm
+from .forms import VenueForm
+from .models import Inventory
+from .models import Sport
+from .models import Venue
 from Slots.forms import LocationForm
-
+from Slots.models import Location
+from Slots.models import Schedule
+from Slots.models import Slot
 from Users.models import Notification
-
-from .models import Inventory, Sport, Venue
-from .forms import SportForm, VenueForm, InventoryForm
 
 # Create your views here.
 

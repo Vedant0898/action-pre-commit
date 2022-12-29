@@ -1,15 +1,17 @@
 from datetime import datetime
-from django.shortcuts import render
-from django.contrib.auth import login, logout, authenticate
+
+from django.contrib.auth import authenticate
+from django.contrib.auth import login
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse
-from django.contrib.auth.decorators import login_required
 
-from Slots.models import Slot
-
-from .models import Notification
 from .forms import RegisterUserForm
+from .models import Notification
+from Slots.models import Slot
 
 # Create your views here.
 

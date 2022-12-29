@@ -1,7 +1,11 @@
-from django.core.management.base import BaseCommand, CommandError
-from datetime import datetime, timedelta
+from datetime import datetime
+from datetime import timedelta
 
-from Slots.models import Schedule, Slot
+from django.core.management.base import BaseCommand
+from django.core.management.base import CommandError
+
+from Slots.models import Schedule
+from Slots.models import Slot
 
 
 class Command(BaseCommand):

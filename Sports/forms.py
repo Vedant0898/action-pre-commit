@@ -1,6 +1,8 @@
 from django import forms
 
-from .models import Sport, Inventory, Venue
+from .models import Inventory
+from .models import Sport
+from .models import Venue
 
 
 class SportForm(forms.ModelForm):
