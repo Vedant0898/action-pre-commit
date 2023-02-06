@@ -8,7 +8,6 @@ from Sports.models import Venue
 
 
 class Location(models.Model):
-
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
     venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
 
@@ -39,7 +38,6 @@ class Schedule(models.Model):
 
 
 class Slot(models.Model):
-
     STATUS_CHOICES = (
         ("1", "Available"),
         ("2", "Booked"),

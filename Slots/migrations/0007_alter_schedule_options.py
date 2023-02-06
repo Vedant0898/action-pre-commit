@@ -3,7 +3,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("Slots", "0006_alter_schedule_options_alter_slot_options"),
     ]

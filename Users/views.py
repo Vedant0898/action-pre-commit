@@ -17,7 +17,6 @@ from Slots.models import Slot
 
 
 def register(request):
-
     if request.method != "POST":
         # display blank form
         form = RegisterUserForm()
@@ -42,7 +41,6 @@ def register(request):
 
 
 def login_user(request):
-
     if request.method != "POST":
         # display a blank form
         form = AuthenticationForm(request)
@@ -67,7 +65,6 @@ def logout_user(request):
 
 @login_required
 def profile(request):
-
     cnt = Slot.objects.filter(booking=request.user).count()
     context = {"u": request.user, "cnt": cnt}
 
@@ -76,7 +73,6 @@ def profile(request):
 
 @login_required
 def view_booked_slots(request):
-
     slots = Slot.objects.filter(booking=request.user)
     today = datetime.now()
     context = {"slots": slots, "today": today}
@@ -86,7 +82,6 @@ def view_booked_slots(request):
 
 @login_required
 def view_notification(request):
-
     notifs = Notification.objects.filter(user=request.user)
 
     context = {"notifs": notifs}

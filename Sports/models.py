@@ -1,8 +1,8 @@
 from django.db import models
 
+
 # Create your models here.
 class Sport(models.Model):
-
     name = models.CharField(max_length=50, unique=True)
     info = models.TextField(null=True, blank=True)
 
@@ -14,7 +14,6 @@ class Sport(models.Model):
 
 
 class Inventory(models.Model):
-
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, help_text="Name of Equipment")
     quantity = models.IntegerField()
@@ -27,7 +26,6 @@ class Inventory(models.Model):
 
 
 class Venue(models.Model):
-
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
     name = models.CharField(
         max_length=50, help_text="Name of Venue eg. Room No., Court No. etc"
